@@ -49,6 +49,10 @@ public:
 
 This listing is a mapping template: replacing each comment with an actual engine call is required. Returning `true` from a real adapter before the engine accepts the task may lose decisions.
 
+## Windows DLL and native C++ ABI
+
+The shared library explicitly exports `World`, `HookPipeline`, `TaskBridge` and `task_name` on Windows for same-toolchain C++ consumers. The C++ ABI and standard-library container types are **not** stable across differing MSVC versions or compilers. Prefer `npc_c.h` for Unity, cross-compiler consumers and long-lived binary plugin contracts. Always match executable architecture and runtime.
+
 ## Unreal Engine
 
 Use a C++ `UWorldSubsystem` or actor component to own a `rootcastle::npc::World`. Read transforms and LOS on the game thread, call `World::tick` at a fixed interval, then map intents to AIController/Behavior Tree/MoveTo or Gameplay Ability actions. Use a `TaskSink` to make the boundary explicit. Include the library via your module's third-party dependency settings and add platform-specific binary packaging. No Unreal plugin module is shipped; the above integration requires a local adapter.

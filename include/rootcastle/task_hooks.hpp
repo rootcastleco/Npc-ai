@@ -25,7 +25,7 @@ enum class TaskKind : std::uint8_t {
     PatrolRoute
 };
 
-const char* task_name(TaskKind kind) noexcept;
+RC_NPC_CPP_API const char* task_name(TaskKind kind) noexcept;
 
 struct TaskCommand {
     TaskKind kind = TaskKind::StandStill;
@@ -41,7 +41,7 @@ using TaskHook = HookVerdict (*)(TaskCommand& command, void* user_data) noexcept
 
 // Fixed-capacity, ordered interception pipeline. A hook can modify a task
 // or cancel it. Hooks must not mutate registration while being invoked.
-class HookPipeline {
+class RC_NPC_CPP_API HookPipeline {
 public:
     static constexpr std::size_t kMaxHooks = 128;
     std::uint64_t add(TaskKind kind, TaskHook callback, void* user_data = nullptr) noexcept;
@@ -78,7 +78,7 @@ struct BridgeMetrics {
 
 // Calls remain on the engine's thread. Failed commands are retained and
 // retried on the next flush (not sent every tick unless something changes).
-class TaskBridge {
+class RC_NPC_CPP_API TaskBridge {
 public:
     TaskBridge(World& world, TaskSink& sink, const HookPipeline* hooks = nullptr) noexcept;
     void flush();

@@ -8,6 +8,18 @@
 #include <map>
 #include <vector>
 
+// The native C++ API can be exported from a Windows DLL for same-toolchain
+// consumers. For a stable cross-compiler boundary, use npc_c.h instead.
+#if defined(_WIN32) && defined(RC_NPC_SHARED)
+#  if defined(RC_NPC_EXPORTS)
+#    define RC_NPC_CPP_API __declspec(dllexport)
+#  else
+#    define RC_NPC_CPP_API __declspec(dllimport)
+#  endif
+#else
+#  define RC_NPC_CPP_API
+#endif
+
 namespace rootcastle::npc {
 
 using EntityId = std::uint64_t;
@@ -127,7 +139,7 @@ struct Metrics {
 
 // Single-thread owner. Call tick with a fixed dt for deterministic replay.
 // No engine API, I/O, heap-owning callbacks, or background threads are used.
-class World {
+class RC_NPC_CPP_API World {
 public:
     static constexpr std::size_t kMaximumAgents = 100000;
     static constexpr std::size_t kMaximumPatrolPoints = 128;
